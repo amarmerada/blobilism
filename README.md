@@ -12,8 +12,10 @@ This demo implements a simple drawing program based on a circle brush.
 TODO: Put images of what you've made here
 https://github.com/amarmerada/blobilism/blobilism_blending.png
 I'm not much of a digital artist and wasn't sure what to draw, so this is just an example of the color alteration function I put in.
- L = less, M = more, shift = blue, ctr = red, alt = green, 
+ L = less, M = more, shift = red, ctr = blue, alt = green, 
  ex. holding alt and hitting L will decrease the green value by 0.1f.
+ ALso by pressing o you can change to an oval and t you can change to a triangle. If you want to switch back, you just hit the toggle for the shape you're in again. 
+ 
 
 ## How to build
 

@@ -12,6 +12,7 @@ struct Pen{
     int xCoord;
     int yCoord;
     float transparency;
+    int shape;
 };
 
 class MyWindow : public Window {
@@ -34,6 +35,9 @@ class MyWindow : public Window {
       // todo: store a circle with the current color, size, x, y
         pen.xCoord = x;
         pen.yCoord = y;
+        //pen.r = pen.r * pen.transparency + 0.95f * (1 - pen.transparency);
+        //pen.g = pen.g * pen.transparency + 0.95f * (1 - pen.transparency);
+        //pen.b = pen.b * pen.transparency + 0.95f * (1 - pen.transparency);
         myCircles.push_back(pen);
     }
   }
@@ -137,13 +141,13 @@ class MyWindow : public Window {
     }
     else if (key == GLFW_KEY_M) {
         if (mods == GLFW_MOD_SHIFT) { // increases red saturation
-            if (pen.r <= 0.9f) {
-                pen.r += 0.1f;
+            if (pen.r <= 0.95f) {
+                pen.r += 0.05f;
             }
         }
         if (mods == GLFW_MOD_ALT) { // increases green saturation
-            if (pen.g <= 0.9f) {
-                pen.g += 0.1f;
+            if (pen.g <= 0.95f) {
+                pen.g += 0.05f;
             }
         }
         if (mods == GLFW_MOD_CONTROL) { //increased blue saturation
@@ -153,19 +157,19 @@ class MyWindow : public Window {
         }
     }
     else if (key == GLFW_KEY_T) {
-        if (shape == 2) {
-            shape = 0;
+        if (pen.shape == 2) {
+            pen.shape = 0;
         }
         else {
-            shape = 2;
+            pen.shape = 2;
         }
     }
     else if (key == GLFW_KEY_O) {
-        if (shape == 1) {
-            shape = 0;
+        if (pen.shape == 1) {
+            pen.shape = 0;
         }
         else {
-            shape = 1;
+            pen.shape = 1;
         }
     }
   }
@@ -177,25 +181,34 @@ class MyWindow : public Window {
     //circle(width() * 0.5f, height() * 0.5, 300);
 
     // todo : draw pallet
-    color(0.3f, 0.3f, 0.3f);
-    square(width()/2.0f, 35, width(), 70);
+    
     for (int i = 0; i < myCircles.size();  i++) {
-        float red = myCircles[i].r * pen.transparency;
-        float green = myCircles[i].g * pen.transparency;
-        float blue = myCircles[i].b * pen.transparency; 
-        color(red, green, blue);
-        if (shape == 1) {
+        color(myCircles[i].r, myCircles[i].g, myCircles[i].b, myCircles[i].transparency);
+
+        if (myCircles[i].shape == 1) {
             ellipsoid(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter, myCircles[i].diameter / 2.0f);
         }
-        else if (shape == 2) {
+        else if (myCircles[i].shape == 2) {
             triangle(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter, myCircles[i].diameter);
         }
         else {
             circle(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter);
         }
     }
-    color(pen.r, pen.g, pen.b);
-    circle(pen.xCoord, pen.yCoord, pen.diameter);   
+
+    color(pen.r, pen.g, pen.b, pen.transparency);
+    if (pen.shape == 1) {
+        ellipsoid(pen.xCoord, pen.yCoord, pen.diameter, pen.diameter / 2.0f);
+    }
+    else if (pen.shape = 2) {
+        triangle(pen.xCoord, pen.yCoord, pen.diameter, pen.diameter);
+    }
+    else {
+        circle(pen.xCoord, pen.yCoord, pen.diameter);
+    } 
+
+    color(0.3f, 0.3f, 0.3f);
+    square(width() / 2.0f, 35, width(), 70);
 
     color(black.r, black.g, black.b); //black
     circle(black.xCoord, black.yCoord, black.diameter);
@@ -226,7 +239,6 @@ class MyWindow : public Window {
   // current transparency
   float alpha = 1.0;
   // current color
-  int shape = 0;
 
   float R;
   float Rhold;
@@ -240,16 +252,16 @@ class MyWindow : public Window {
 
   //color pallet
   std::vector<Pen> myPallette;
-  struct Pen black = Pen{ 0.0, 0.0, 0.0, 50, 475, 35, 1.0};
-  struct Pen white = Pen{1, 1, 1, 50, 425, 35, 1.0f};
-  struct Pen red = Pen{1, 0 , 0, 50, 375, 35, 1.0f};
-  struct Pen orange = Pen{1, 0.6, 0, 50, 325, 35, 1.0f};
-  struct Pen yellow = Pen{1, 1, 0, 50, 275, 35, 1.0f};
-  struct Pen green = Pen{0, 1, 0, 50, 225, 35, 1.0f};
-  struct Pen cyan = Pen{0, 1, 1, 50, 175, 35, 1.0f};
-  struct Pen blue = Pen{0, 0, 1, 50, 125, 35, 1.0f};
-  struct Pen purple = Pen{0.65f, 0.2f, 1.0f, 50, 75, 35, 1.0f};
-  struct Pen magenta = Pen{1.0f, 0.0f, 1.0f, 50, 25, 35, 1.0f};
+  struct Pen black = Pen{ 0.01, 0.01, 0.01, 50, 475, 35, 1.0f, 0};
+  struct Pen white = Pen{1, 1, 1, 50, 425, 35, 1.0f, 0};
+  struct Pen red = Pen{1, 0 , 0, 50, 375, 35, 1.0f, 0};
+  struct Pen orange = Pen{1, 0.6, 0, 50, 325, 35, 1.0f, 0};
+  struct Pen yellow = Pen{1, 1, 0, 50, 275, 35, 1.0f, 0};
+  struct Pen green = Pen{0, 1, 0, 50, 225, 35, 1.0f, 0};
+  struct Pen cyan = Pen{0, 1, 1, 50, 175, 35, 1.0f, 0};
+  struct Pen blue = Pen{0, 0, 1, 50, 125, 35, 1.0f, 0};
+  struct Pen purple = Pen{0.65f, 0.2f, 1.0f, 50, 75, 35, 1.0f, 0};
+  struct Pen magenta = Pen{1.0f, 0.0f, 1.0f, 50, 25, 35, 1.0f, 0};
   
   // color pallet
 };
