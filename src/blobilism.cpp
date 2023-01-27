@@ -53,7 +53,6 @@ class MyWindow : public Window {
       // todo: check if user clicked a color 
       float mx = mouseX();  // current mouse pos x
       float my = mouseY();  // current mouse pos y
-      printf("mousex: %f mousey: %f\n", mx, my);
       float localx = 0;
       float localy = 0;
       float localDist = 100;
@@ -68,9 +67,7 @@ class MyWindow : public Window {
           double sum = squareX + squareY;
           double sqrRt = sqrt(sum);
           localDist = (float)sqrRt;
-          printf("DISTANCE: %f\n", localDist);
-          if (localDist < 10) {
-              printf("ATTEMPTING CHANGE\n");
+          if (localDist <= 25) {
               pen.r = myPallette[i].r;
               pen.g = myPallette[i].g;
               pen.b = myPallette[i].b;
@@ -96,40 +93,80 @@ class MyWindow : public Window {
     }
     else if (key == GLFW_KEY_LEFT) {
       // decrease alpha
-        printf("BEFORE: pen R: %f  pen G: %f pen B: %f\n", pen.r, pen.g, pen.b);
         if (pen.transparency >= 0.1) {
             pen.transparency -= 0.1;
         }
-        float currentSatR = pen.r * pen.transparency;
-        float currentSatG = pen.g * pen.transparency;
-        float currentSatB = pen.b * pen.transparency;
-        float currentBGR = 0.95f * (1 - pen.transparency);
-        float currentBGG = 0.95f * (1 - pen.transparency);
-        float currentBGB = 0.95f * (1 - pen.transparency);
-        pen.r = currentSatR + currentBGR;
-        pen.g = currentSatG + currentBGG;
-        pen.b = currentSatB + currentBGB;
+        
     }
     else if (key == GLFW_KEY_RIGHT) {
       // increase alpha
-        printf("BEFORE: pen R: %f  pen G: %f pen B: %f\n", pen.r, pen.g, pen.b);
         if (pen.transparency < 0.9) {
             pen.transparency += 0.1;
         }
         //alpha * c_foreground + (1-alpha c_background)
-        float currentSatR = pen.r * pen.transparency;
-        float currentSatG = pen.g * pen.transparency;
-        float currentSatB = pen.b * pen.transparency;
-        float currentBGR = 0.95f * (1 - pen.transparency);
-        float currentBGG = 0.95f * (1 - pen.transparency);
-        float currentBGB = 0.95f * (1 - pen.transparency);
-        pen.r = currentSatR + currentBGR;
-        pen.g = currentSatG + currentBGG;
-        pen.b = currentSatB + currentBGB;
+        //float currentSatR = pen.r * pen.transparency;
+        //float currentSatG = pen.g * pen.transparency;
+        //float currentSatB = pen.b * pen.transparency;
+        //float currentBGR = 0.95f * (1 - pen.transparency);
+        //float currentBGG = 0.95f * (1 - pen.transparency);
+        //float currentBGB = 0.95f * (1 - pen.transparency);
+        //pen.r = currentSatR + currentBGR;
+        //pen.g = currentSatG + currentBGG;
+        //pen.b = currentSatB + currentBGB;
     }
     else if (key == GLFW_KEY_C) {
       // clear vector of circles
         myCircles.clear();
+    }
+    else if (key == GLFW_KEY_L) { // decreases red saturation
+        if (mods == GLFW_MOD_SHIFT) {
+            if (pen.r >= 0.1f) {
+                pen.r -= 0.1f;
+            }
+        }
+        if (mods == GLFW_MOD_ALT) { // decreases green saturation
+            if (pen.g >= 0.1f) {
+                pen.g -= 0.1f;
+            }
+        }
+        if (mods == GLFW_MOD_CONTROL) { //decreses blue saturation
+            if (pen.b >= 0.1f) {
+                pen.b -= 0.1f;
+            }
+        }
+    }
+    else if (key == GLFW_KEY_M) {
+        if (mods == GLFW_MOD_SHIFT) { // increases red saturation
+            if (pen.r <= 0.9f) {
+                pen.r += 0.1f;
+            }
+        }
+        if (mods == GLFW_MOD_ALT) { // increases green saturation
+            if (pen.g <= 0.9f) {
+                pen.g += 0.1f;
+            }
+        }
+        if (mods == GLFW_MOD_CONTROL) { //increased blue saturation
+            if (pen.b <= 0.9f) {
+                pen.b += 0.1f;
+            }
+        }
+    }
+    else if (key == GLFW_KEY_T) {
+        if (shape == 2) {
+            shape = 0;
+        }
+        else {
+            shape = 2;
+        }
+    }
+    else if (key == GLFW_KEY_O) {
+        if (shape == 1) {
+            shape = 0;
+        }
+        else {
+            shape = 1;
+        }
     }
   }
 
@@ -140,11 +177,22 @@ class MyWindow : public Window {
     //circle(width() * 0.5f, height() * 0.5, 300);
 
     // todo : draw pallet
-    color(0.1f, 0.1f, 0.1f);
+    color(0.3f, 0.3f, 0.3f);
     square(width()/2.0f, 35, width(), 70);
     for (int i = 0; i < myCircles.size();  i++) {
-        color(myCircles[i].r, myCircles[i].g, myCircles[i].b);
-        circle(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter);
+        float red = myCircles[i].r * pen.transparency;
+        float green = myCircles[i].g * pen.transparency;
+        float blue = myCircles[i].b * pen.transparency; 
+        color(red, green, blue);
+        if (shape == 1) {
+            ellipsoid(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter, myCircles[i].diameter / 2.0f);
+        }
+        else if (shape == 2) {
+            triangle(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter, myCircles[i].diameter);
+        }
+        else {
+            circle(myCircles[i].xCoord, myCircles[i].yCoord, myCircles[i].diameter);
+        }
     }
     color(pen.r, pen.g, pen.b);
     circle(pen.xCoord, pen.yCoord, pen.diameter);   
@@ -178,25 +226,30 @@ class MyWindow : public Window {
   // current transparency
   float alpha = 1.0;
   // current color
+  int shape = 0;
+
   float R;
+  float Rhold;
   float G;
+  float Ghold;
   float B;
+  float Bhold;
   // list of circles to draw each frame
   struct Pen pen = Pen{ R, G, B, penSize, 300, 300, alpha };
   std::vector<Pen> myCircles;
 
   //color pallet
   std::vector<Pen> myPallette;
-  struct Pen black = Pen{ 0.0, 0.0, 0.0, 20, 490, 10, 1.0f};
-  struct Pen white = Pen{1, 1, 1, 20, 470, 10, 1.0f};
-  struct Pen red = Pen{1, 0 , 0, 20, 450, 10, 1.0f};
-  struct Pen orange = Pen{1, 0.6, 0, 20, 430, 10, 1.0f};
-  struct Pen yellow = Pen{1, 1, 0, 20, 410, 10, 1.0f};
-  struct Pen green = Pen{0, 1, 0, 20, 390, 10, 1.0f};
-  struct Pen cyan = Pen{0, 1, 1, 20, 370, 10, 1.0f};
-  struct Pen blue = Pen{0, 0, 1, 20, 350, 10, 1.0f};
-  struct Pen purple = Pen{0.65f, 0.2f, 1.0f, 20, 330, 10, 1.0f};
-  struct Pen magenta = Pen{1.0f, 0.0f, 1.0f, 20, 310, 10, 1.0f};
+  struct Pen black = Pen{ 0.0, 0.0, 0.0, 50, 475, 35, 1.0};
+  struct Pen white = Pen{1, 1, 1, 50, 425, 35, 1.0f};
+  struct Pen red = Pen{1, 0 , 0, 50, 375, 35, 1.0f};
+  struct Pen orange = Pen{1, 0.6, 0, 50, 325, 35, 1.0f};
+  struct Pen yellow = Pen{1, 1, 0, 50, 275, 35, 1.0f};
+  struct Pen green = Pen{0, 1, 0, 50, 225, 35, 1.0f};
+  struct Pen cyan = Pen{0, 1, 1, 50, 175, 35, 1.0f};
+  struct Pen blue = Pen{0, 0, 1, 50, 125, 35, 1.0f};
+  struct Pen purple = Pen{0.65f, 0.2f, 1.0f, 50, 75, 35, 1.0f};
+  struct Pen magenta = Pen{1.0f, 0.0f, 1.0f, 50, 25, 35, 1.0f};
   
   // color pallet
 };

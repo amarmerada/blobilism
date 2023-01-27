@@ -10,6 +10,10 @@ This demo implements a simple drawing program based on a circle brush.
 ## Results
 
 TODO: Put images of what you've made here
+https://github.com/amarmerada/blobilism/blobilism_blending.png
+I'm not much of a digital artist and wasn't sure what to draw, so this is just an example of the color alteration function I put in.
+ L = less, M = more, shift = blue, ctr = red, alt = green, 
+ ex. holding alt and hitting L will decrease the green value by 0.1f.
 
 ## How to build
 
