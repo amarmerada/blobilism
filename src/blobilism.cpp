@@ -122,6 +122,11 @@ class MyWindow : public Window {
       // clear vector of circles
         myCircles.clear();
     }
+    else if (key == GLFW_KEY_Z) { //undo
+        if (myCircles.size() >= 1) {
+            myCircles.pop_back();
+        }
+    }
     else if (key == GLFW_KEY_L) { // decreases red saturation
         if (mods == GLFW_MOD_SHIFT) {
             if (pen.r >= 0.1f) {
